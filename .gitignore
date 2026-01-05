@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+.pnpm-debug.log
+
+# Build output
+dist/
+.next/
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# Database
+*.db
+*.db-*
+drizzle/
+
+# Turbo
+.turbo/

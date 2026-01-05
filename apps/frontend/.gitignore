@@ -1,0 +1,49 @@
+# Dependencies
+node_modules
+.pnpm-debug.log
+
+# Next.js
+/.next/
+/out/
+next-env.d.ts
+
+# Build output
+dist/
+build/
+
+# Environment variables
+.env*.local
+.env.production
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+.nyc_output/
+
+# TypeScript
+*.tsbuildinfo
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Vercel
+.vercel
+
+# Generated API files (optional - you may want to commit these)
+# lib/api/generated.ts
+# lib/api/model/
+# lib/api/users/
