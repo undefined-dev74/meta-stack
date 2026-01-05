@@ -6,19 +6,44 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
+    "//#lint": {
+      "cache": false,
+      "inputs": ["**/*.{ts,tsx,js,jsx,json,md}"]
+    },
+    "//#format": {
+      "cache": false,
+      "inputs": ["**/*.{ts,tsx,js,jsx,json,md}"]
+    },
     "lint": {
       "dependsOn": ["^lint"]
     },
+    "format": {
+      "dependsOn": ["^format"]
+    },
+    "typecheck": {
+      "dependsOn": ["^typecheck"]
+    },
     "dev": {
       "cache": false,
+      "persistent": true,
+      "env": ["DATABASE_URL"]
+    },
+    "db:migrate:dev": {
+      "cache": false,
       "persistent": true
+    },
+    "db:migrate:deploy": {
+      "cache": false
     },
     "db:push": {
       "cache": false
     },
-    "db:studio": {
-      "cache": false,
-      "persistent": true
+    "db:seed": {
+      "cache": false
+    },
+    "generate": {
+      "dependsOn": ["^generate"],
+      "cache": false
     },
     "generate:api": {
       "cache": false

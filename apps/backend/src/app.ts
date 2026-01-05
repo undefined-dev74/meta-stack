@@ -11,8 +11,7 @@ import {
   validatorCompiler,
 } from 'fastify-zod-openapi';
 import { z } from 'zod';
-import { db, users } from './db';
-import { eq } from 'drizzle-orm';
+import { db, users, eq } from '@app/db';
 
 const app = fastify();
 
@@ -56,28 +55,44 @@ async function main() {
 
   // Define Zod schemas for request and response
   const CreateUserRequestSchema = z.object({
-    name: z.string().min(1).meta({
+    name: z.string().min(1).optional().meta({
       description: 'User name',
       example: 'John Doe',
     }),
     email: z.string().email().meta({
       description: 'User email address',
       example: 'john@example.com',
+    }),
+    address: z.string().min(1).meta({
+      description: 'User address',
+      example: '123 Main St',
+    }),
+    role: z.enum(['user', 'admin']).optional().default('user').meta({
+      description: 'User role',
+      example: 'user',
     }),
   });
 
   const UserResponseSchema = z.object({
-    id: z.number().int().positive().meta({
+    id: z.string().uuid().meta({
       description: 'User ID',
-      example: 1,
+      example: '123e4567-e89b-12d3-a456-426614174000',
     }),
-    name: z.string().meta({
+    name: z.string().nullable().meta({
       description: 'User name',
       example: 'John Doe',
     }),
     email: z.string().email().meta({
       description: 'User email address',
       example: 'john@example.com',
+    }),
+    address: z.string().meta({
+      description: 'User address',
+      example: '123 Main St',
+    }),
+    role: z.enum(['user', 'admin']).meta({
+      description: 'User role',
+      example: 'user',
     }),
   });
 
@@ -121,7 +136,7 @@ async function main() {
     } satisfies FastifyZodOpenApiSchema,
     handler: async (request, reply) => {
       try {
-        const { name, email } = request.body;
+        const { name, email, address, role } = request.body;
 
         // Insert new user into database using Drizzle ORM
         const [newUser] = await db
@@ -129,6 +144,8 @@ async function main() {
           .values({
             name,
             email,
+            address,
+            role,
           })
           .returning();
 
@@ -136,6 +153,8 @@ async function main() {
           id: newUser.id,
           name: newUser.name,
           email: newUser.email,
+          address: newUser.address,
+          role: newUser.role,
         });
       } catch (error: any) {
         // Log the error for debugging
@@ -185,6 +204,8 @@ async function main() {
           id: user.id,
           name: user.name,
           email: user.email,
+          address: user.address,
+          role: user.role,
         }));
 
         reply.send(userList);
@@ -204,6 +225,23 @@ async function main() {
   } catch (err) {
     app.log.error(err);
     process.exit(1);
+  }
+
+  // Graceful shutdown handlers
+  const signals = ['SIGINT', 'SIGTERM'] as const;
+
+  for (const signal of signals) {
+    process.on(signal, async () => {
+      console.log(`\n📴 Received ${signal}, gracefully shutting down...`);
+      try {
+        await app.close();
+        console.log('✅ Server closed successfully');
+        process.exit(0);
+      } catch (err) {
+        console.error('❌ Error during shutdown:', err);
+        process.exit(1);
+      }
+    });
   }
 }
 
