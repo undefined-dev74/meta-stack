@@ -28,6 +28,10 @@
       "persistent": true,
       "env": ["DATABASE_URL"]
     },
+    "frontend:generate:api":{
+      "cache": false,
+      "persistent": true
+    },
     "db:migrate:dev": {
       "cache": false,
       "persistent": true
